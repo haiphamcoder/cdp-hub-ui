@@ -1,0 +1,8 @@
+services:
+  cdp-hub-ui:
+    build: .
+    ports:
+      - "3000:80"
+    volumes:
+      - .:/app
+      - /app/node_modules
