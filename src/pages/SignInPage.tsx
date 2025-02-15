@@ -17,6 +17,7 @@ import ColorSchemeToggle from '../theme/ColorSchemeToggle';
 import ForgotPasswordDialog from '../components/ForgotPasswordDialog';
 import MuiCard from '@mui/material/Card';
 import CDPLogo from '../assets/logo.svg';
+import { useNavigate } from 'react-router-dom';
 
 const Card = styled(MuiCard)(({ theme }) => ({
     display: 'flex',
@@ -85,6 +86,14 @@ export default function SignInPage(props: { disableCustomTheme?: boolean }) {
             username: data.get('username'),
             password: data.get('password'),
         });
+    };
+
+    const navigate = useNavigate();
+
+    const handleSignIn = () => {
+        if (!validateInputs()) {
+            navigate('/dashboard');
+        }
     };
 
     const validateInputs = () => {
@@ -193,7 +202,7 @@ export default function SignInPage(props: { disableCustomTheme?: boolean }) {
                             type="submit"
                             fullWidth
                             variant="contained"
-                            onClick={validateInputs}
+                            onClick={handleSignIn}
                         >
                             Sign in
                         </Button>

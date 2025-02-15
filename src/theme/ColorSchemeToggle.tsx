@@ -12,6 +12,8 @@ export default function ColorSchemeToggle(props: IconButtonProps) {
         <IconButton
             aria-label="toggle light/dark mode"
             disabled={!mounted}
+            size="small"
+            disableRipple
             onClick={() => setMode(mode === 'light' ? 'dark' : 'light')}
             {...other}
         >
