@@ -8,9 +8,9 @@ import { tabsClasses } from '@mui/material/Tabs';
 import Typography from '@mui/material/Typography';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
 import DashboardRoundedIcon from '@mui/icons-material/DashboardRounded';
-// import SideMenuMobile from './SideMenuMobile';
+import SideMenuMobile from './SideMenuMobile';
 import MenuButton from './MenuButton';
-import ColorModeIconDropdown from '.././theme/ColorModeIconDropdown';
+import ColorSchemeToggle from '../theme/ColorSchemeToggle';
 
 const Toolbar = styled(MuiToolbar)({
   width: '100%',
@@ -68,11 +68,11 @@ export default function AppNavbar() {
               Dashboard
             </Typography>
           </Stack>
-          <ColorModeIconDropdown />
+          <ColorSchemeToggle />
           <MenuButton aria-label="menu" onClick={toggleDrawer(true)}>
             <MenuRoundedIcon />
           </MenuButton>
-          {/* <SideMenuMobile open={open} toggleDrawer={toggleDrawer} /> */}
+          <SideMenuMobile open={open} toggleDrawer={toggleDrawer} />
         </Stack>
       </Toolbar>
     </AppBar>

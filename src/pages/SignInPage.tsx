@@ -18,6 +18,7 @@ import ForgotPasswordDialog from '../components/ForgotPasswordDialog';
 import MuiCard from '@mui/material/Card';
 import CDPLogo from '../assets/logo.svg';
 import { useNavigate } from 'react-router-dom';
+import { GoogleIcon } from '../components/CustomIcons';
 
 const Card = styled(MuiCard)(({ theme }) => ({
     display: 'flex',
@@ -27,6 +28,8 @@ const Card = styled(MuiCard)(({ theme }) => ({
     padding: theme.spacing(4),
     gap: theme.spacing(2),
     margin: 'auto',
+    maxHeight: '100vh',
+    overflow: 'auto',
     boxShadow:
         'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
     [theme.breakpoints.up('sm')]: {
@@ -42,6 +45,8 @@ const SignInContainer = styled(Stack)(({ theme }) => ({
     height: 'calc((1 - var(--template-frame-height, 0)) * 100dvh)',
     minHeight: '100%',
     padding: theme.spacing(2),
+    display: 'flex',
+    alignItems: 'center',
     [theme.breakpoints.up('sm')]: {
         padding: theme.spacing(4),
     },
@@ -148,67 +153,80 @@ export default function SignInPage(props: { disableCustomTheme?: boolean }) {
                             gap: 2,
                         }}
                     >
-                        <FormControl>
-                            <FormLabel htmlFor="username">Username</FormLabel>
-                            <TextField
-                                error={usernameError}
-                                helperText={usernameErrorMessage}
-                                id="username"
-                                type="username"
-                                name="username"
-                                placeholder="admin"
-                                autoComplete="current-username"
-                                autoFocus
-                                required
-                                fullWidth
-                                variant="outlined"
-                                color={usernameError ? 'error' : 'primary'}
-                            />
-                        </FormControl>
-                        <FormControl>
-                            <FormLabel htmlFor="password">Password</FormLabel>
-                            <TextField
-                                error={passwordError}
-                                helperText={passwordErrorMessage}
-                                name="password"
-                                placeholder="••••••"
-                                type="password"
-                                id="password"
-                                autoComplete="current-password"
-                                autoFocus
-                                required
-                                fullWidth
-                                variant="outlined"
-                                color={passwordError ? 'error' : 'primary'}
-                            />
-                        </FormControl>
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                            <FormControlLabel
-                                control={<Checkbox value="remember" color="primary" />}
-                                label="Remember me"
-                            />
-                            <Link
-                                component="button"
-                                type="button"
-                                onClick={handleForgotPasswordDialogOpen}
-                                variant="body2"
-                                sx={{ alignSelf: 'center' }}
-                            >
-                                Forgot your password?
-                            </Link>
+                        <Box sx={{ flex: { xs: '1 1 100%', sm: '1 1 100%' } }}>
+                            <FormControl fullWidth>
+                                <FormLabel htmlFor="username">Username</FormLabel>
+                                <TextField
+                                    error={usernameError}
+                                    helperText={usernameErrorMessage}
+                                    id="username"
+                                    type="username"
+                                    name="username"
+                                    placeholder="admin"
+                                    autoComplete="current-username"
+                                    autoFocus
+                                    required
+                                    fullWidth
+                                    variant="outlined"
+                                    color={usernameError ? 'error' : 'primary'}
+                                />
+                            </FormControl>
                         </Box>
-                        <ForgotPasswordDialog open={forgotPasswordDialogOpen} handleClose={handleForgotPasswordDialogClose} />
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            onClick={handleSignIn}
-                        >
-                            Sign in
-                        </Button>
-
+                        <Box sx={{ flex: { xs: '1 1 100%', sm: '1 1 100%' } }}>
+                            <FormControl fullWidth>
+                                <FormLabel htmlFor="password">Password</FormLabel>
+                                <TextField
+                                    error={passwordError}
+                                    helperText={passwordErrorMessage}
+                                    name="password"
+                                    placeholder="••••••"
+                                    type="password"
+                                    id="password"
+                                    autoComplete="current-password"
+                                    autoFocus
+                                    required
+                                    fullWidth
+                                    variant="outlined"
+                                    color={passwordError ? 'error' : 'primary'}
+                                />
+                            </FormControl>
+                        </Box>
+                        <Box sx={{ flex: { xs: '1 1 100%', sm: '1 1 100%' } }}>
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                                <FormControlLabel
+                                    control={<Checkbox value="remember" color="primary" />}
+                                    label="Remember me"
+                                />
+                                <Link
+                                    component="button"
+                                    type="button"
+                                    onClick={handleForgotPasswordDialogOpen}
+                                    variant="body2"
+                                    sx={{ alignSelf: 'center' }}
+                                >
+                                    Forgot your password?
+                                </Link>
+                            </Box>
+                        </Box>
                     </Box>
+                    <ForgotPasswordDialog open={forgotPasswordDialogOpen} handleClose={handleForgotPasswordDialogClose} />
+                    <Button
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                        onClick={handleSignIn}
+                    >
+                        Sign in
+                    </Button>
                     <Divider>or</Divider>
+                    <Button
+                        fullWidth
+                        variant="outlined"
+                        onClick={() => alert('Sign in with Google')}
+                        startIcon={<GoogleIcon />}
+                    >
+                        Sign in with Google
+                    </Button>
                     <Typography sx={{ textAlign: 'center' }}>
                         Don&apos;t have an account?{' '}
                         <Link

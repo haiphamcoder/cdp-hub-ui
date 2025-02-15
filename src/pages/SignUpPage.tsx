@@ -16,6 +16,7 @@ import AppTheme from '../theme/AppTheme';
 import ColorSchemeToggle from '../theme/ColorSchemeToggle';
 import CDPLogo from '../assets/logo.svg';
 import MuiCard from '@mui/material/Card';
+import { GoogleIcon } from '../components/CustomIcons';
 
 const Card = styled(MuiCard)(({ theme }) => ({
     display: 'flex',
@@ -199,142 +200,146 @@ export default function SignUpPage(props: { disableCustomTheme?: boolean }) {
                         noValidate
                         sx={{
                             display: 'flex',
-                            flexDirection: 'column',
+                            flexWrap: 'wrap',
                             width: '100%',
                             gap: 2,
                         }}
                     >
-                        <Box sx={{ display: 'flex', flexWrap: 'wrap', overflow: 'auto', gap: 2 }}>
-                            <Box sx={{ flex: { xs: '1 1 100%', sm: '1 1 calc(50% - 8px)' } }}>
-                                <FormControl fullWidth>
-                                    <FormLabel htmlFor="firstName">First Name</FormLabel>
-                                    <TextField
-                                        error={firstNameError}
-                                        helperText={firstNameErrorMessage}
-                                        id="firstName"
-                                        name="firstName"
-                                        autoComplete="firstName"
-                                        required
-                                        fullWidth
-                                        variant="outlined"
-                                        color={firstNameError ? 'error' : 'primary'}
-                                    />
-                                </FormControl>
-                            </Box>
-                            <Box sx={{ flex: { xs: '1 1 100%', sm: '1 1 calc(50% - 8px)' } }}>
-                                <FormControl fullWidth>
-                                    <FormLabel htmlFor="lastName">Last Name</FormLabel>
-                                    <TextField
-                                        error={lastNameError}
-                                        helperText={lastNameErrorMessage}
-                                        id="lastName"
-                                        name="lastName"
-                                        autoComplete="lastName"
-                                        required
-                                        fullWidth
-                                        variant="outlined"
-                                        color={lastNameError ? 'error' : 'primary'}
-                                    />
-                                </FormControl>
-                            </Box>
-                            <Box sx={{ flex: { xs: '1 1 100%', sm: '1 1 calc(50% - 8px)' } }}>
-                                <FormControl fullWidth>
-                                    <FormLabel htmlFor="username">Username</FormLabel>
-                                    <TextField
-                                        error={usernameError}
-                                        helperText={usernameErrorMessage}
-                                        id="username"
-                                        type="username"
-                                        name="username"
-                                        placeholder="admin"
-                                        autoComplete="current-username"
-                                        autoFocus
-                                        required
-                                        fullWidth
-                                        variant="outlined"
-                                        color={usernameError ? 'error' : 'primary'}
-                                    />
-                                </FormControl>
-                            </Box>
-                            <Box sx={{ flex: { xs: '1 1 100%', sm: '1 1 calc(50% - 8px)' } }}>
-                                <FormControl fullWidth>
-                                    <FormLabel htmlFor="email">Email</FormLabel>
-                                    <TextField
-                                        required
-                                        fullWidth
-                                        id="email"
-                                        placeholder="your@email.com"
-                                        name="email"
-                                        autoComplete="email"
-                                        variant="outlined"
-                                        error={emailError}
-                                        helperText={emailErrorMessage}
-                                        color={passwordError ? 'error' : 'primary'}
-                                    />
-                                </FormControl>
-                            </Box>
-                            <Box sx={{ flex: { xs: '1 1 100%', sm: '1 1 calc(50% - 8px)' } }}>
-                                <FormControl fullWidth>
-                                    <FormLabel htmlFor="password">Password</FormLabel>
-                                    <TextField
-                                        error={passwordError}
-                                        helperText={passwordErrorMessage}
-                                        name="password"
-                                        placeholder="••••••"
-                                        type="password"
-                                        id="password"
-                                        autoComplete="current-password"
-                                        autoFocus
-                                        required
-                                        fullWidth
-                                        variant="outlined"
-                                        color={passwordError ? 'error' : 'primary'}
-                                    />
-                                </FormControl>
-                            </Box>
-                            <Box sx={{ flex: { xs: '1 1 100%', sm: '1 1 calc(50% - 8px)' } }}>
-                                <FormControl fullWidth>
-                                    <FormLabel htmlFor="passwordConfirmation">Confirm Password</FormLabel>
-                                    <TextField
-                                        error={passwordConfirmationError}
-                                        helperText={passwordConfirmationErrorMessage}
-                                        name="passwordConfirmation"
-                                        placeholder="••••••"
-                                        type="password"
-                                        id="passwordConfirmation"
-                                        autoComplete="current-password"
-                                        autoFocus
-                                        required
-                                        fullWidth
-                                        variant="outlined"
-                                        color={passwordConfirmationError ? 'error' : 'primary'}
-                                    />
-                                </FormControl>
-                            </Box>
-                            <Box sx={{ flex: { xs: '1 1 100%', sm: '1 1 100%' } }}>
-                                <FormControlLabel
-                                    control={<Checkbox
-                                        checked={agreedToTerms}
-                                        onChange={handleAgreeToTerms}
-                                        color='primary'
-                                        name='termsAndConditions'
-                                    />}
-                                    label="I agree to the terms and conditions."
-                                />
-                            </Box>
-                            <Box sx={{ flex: { xs: '1 1 100%', sm: '1 1 100%' } }}>
-                                <Button
-                                    type="submit"
+                        <Box sx={{ flex: { xs: '1 1 100%', sm: '1 1 calc(50% - 8px)' } }}>
+                            <FormControl fullWidth>
+                                <FormLabel htmlFor="firstName">First Name</FormLabel>
+                                <TextField
+                                    error={firstNameError}
+                                    helperText={firstNameErrorMessage}
+                                    id="firstName"
+                                    name="firstName"
+                                    autoComplete="firstName"
+                                    required
                                     fullWidth
-                                    variant="contained"
-                                    onClick={validateInputs}
-                                >
-                                    Sign up
-                                </Button>
-                            </Box>
+                                    variant="outlined"
+                                    color={firstNameError ? 'error' : 'primary'}
+                                />
+                            </FormControl>
+                        </Box>
+                        <Box sx={{ flex: { xs: '1 1 100%', sm: '1 1 calc(50% - 8px)' } }}>
+                            <FormControl fullWidth>
+                                <FormLabel htmlFor="lastName">Last Name</FormLabel>
+                                <TextField
+                                    error={lastNameError}
+                                    helperText={lastNameErrorMessage}
+                                    id="lastName"
+                                    name="lastName"
+                                    autoComplete="lastName"
+                                    required
+                                    fullWidth
+                                    variant="outlined"
+                                    color={lastNameError ? 'error' : 'primary'}
+                                />
+                            </FormControl>
+                        </Box>
+                        <Box sx={{ flex: { xs: '1 1 100%', sm: '1 1 calc(50% - 8px)' } }}>
+                            <FormControl fullWidth>
+                                <FormLabel htmlFor="username">Username</FormLabel>
+                                <TextField
+                                    error={usernameError}
+                                    helperText={usernameErrorMessage}
+                                    id="username"
+                                    type="username"
+                                    name="username"
+                                    placeholder="admin"
+                                    autoComplete="current-username"
+                                    autoFocus
+                                    required
+                                    fullWidth
+                                    variant="outlined"
+                                    color={usernameError ? 'error' : 'primary'}
+                                />
+                            </FormControl>
+                        </Box>
+                        <Box sx={{ flex: { xs: '1 1 100%', sm: '1 1 calc(50% - 8px)' } }}>
+                            <FormControl fullWidth>
+                                <FormLabel htmlFor="email">Email</FormLabel>
+                                <TextField
+                                    required
+                                    fullWidth
+                                    id="email"
+                                    placeholder="your@email.com"
+                                    name="email"
+                                    autoComplete="email"
+                                    variant="outlined"
+                                    error={emailError}
+                                    helperText={emailErrorMessage}
+                                    color={passwordError ? 'error' : 'primary'}
+                                />
+                            </FormControl>
+                        </Box>
+                        <Box sx={{ flex: { xs: '1 1 100%', sm: '1 1 calc(50% - 8px)' } }}>
+                            <FormControl fullWidth>
+                                <FormLabel htmlFor="password">Password</FormLabel>
+                                <TextField
+                                    error={passwordError}
+                                    helperText={passwordErrorMessage}
+                                    name="password"
+                                    placeholder="••••••"
+                                    type="password"
+                                    id="password"
+                                    autoComplete="current-password"
+                                    autoFocus
+                                    required
+                                    fullWidth
+                                    variant="outlined"
+                                    color={passwordError ? 'error' : 'primary'}
+                                />
+                            </FormControl>
+                        </Box>
+                        <Box sx={{ flex: { xs: '1 1 100%', sm: '1 1 calc(50% - 8px)' } }}>
+                            <FormControl fullWidth>
+                                <FormLabel htmlFor="passwordConfirmation">Confirm Password</FormLabel>
+                                <TextField
+                                    error={passwordConfirmationError}
+                                    helperText={passwordConfirmationErrorMessage}
+                                    name="passwordConfirmation"
+                                    placeholder="••••••"
+                                    type="password"
+                                    id="passwordConfirmation"
+                                    autoComplete="current-password"
+                                    autoFocus
+                                    required
+                                    fullWidth
+                                    variant="outlined"
+                                    color={passwordConfirmationError ? 'error' : 'primary'}
+                                />
+                            </FormControl>
+                        </Box>
+                        <Box sx={{ flex: { xs: '1 1 100%', sm: '1 1 100%' } }}>
+                            <FormControlLabel
+                                control={<Checkbox
+                                    checked={agreedToTerms}
+                                    onChange={handleAgreeToTerms}
+                                    color='primary'
+                                    name='termsAndConditions'
+                                />}
+                                label="I agree to the terms and conditions."
+                            />
                         </Box>
                     </Box>
+                    <Button
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                        onClick={validateInputs}
+                    >
+                        Sign up
+                    </Button>
                     <Divider>or</Divider>
+                    <Button
+                        fullWidth
+                        variant="outlined"
+                        onClick={() => alert('Sign up with Google')}
+                        startIcon={<GoogleIcon />}
+                    >
+                        Sign up with Google
+                    </Button>
                     <Typography sx={{ textAlign: 'center' }}>
                         Already have an account?{' '}
                         <Link
