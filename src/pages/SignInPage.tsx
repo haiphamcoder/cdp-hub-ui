@@ -19,6 +19,8 @@ import MuiCard from '@mui/material/Card';
 import CDPLogo from '../assets/logo.svg';
 import { useNavigate } from 'react-router-dom';
 import { GoogleIcon } from '../components/CustomIcons';
+import { API_CONFIG } from '../config/api';
+import { useAuth } from '../context/AuthContext';
 
 const Card = styled(MuiCard)(({ theme }) => ({
     display: 'flex',
@@ -73,6 +75,8 @@ export default function SignInPage(props: { disableCustomTheme?: boolean }) {
     const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
     const [forgotPasswordDialogOpen, setForgotPasswordDialogOpen] = React.useState(false);
 
+    const { login } = useAuth();
+
     const handleForgotPasswordDialogOpen = () => {
         setForgotPasswordDialogOpen(true);
     };
@@ -95,30 +99,24 @@ export default function SignInPage(props: { disableCustomTheme?: boolean }) {
 
     const navigate = useNavigate();
 
-    const handleSignIn = () => {
-        if (!validateInputs()) {
-            navigate('/dashboard');
-        }
-    };
-
     const validateInputs = () => {
         const username = document.getElementById('username') as HTMLInputElement;
         const password = document.getElementById('password') as HTMLInputElement;
 
         let isValid = true;
 
-        if (!username.value || username.value.length < 6) {
+        if (!username.value || username.value.length === 0) {
             setUsernameError(true);
-            setUsernameErrorMessage('Please enter a valid username.');
+            setUsernameErrorMessage('Please enter a username.');
             isValid = false;
         } else {
             setUsernameError(false);
             setUsernameErrorMessage('');
         }
 
-        if (!password.value || password.value.length < 6) {
+        if (!password.value || password.value.length === 0) {
             setPasswordError(true);
-            setPasswordErrorMessage('Password must be at least 6 characters long.');
+            setPasswordErrorMessage('Please enter a password.');
             isValid = false;
         } else {
             setPasswordError(false);
@@ -127,6 +125,36 @@ export default function SignInPage(props: { disableCustomTheme?: boolean }) {
 
         return isValid;
     };
+
+    const handleSignIn = async () => {
+        if (validateInputs()) {
+            const username = document.getElementById('username') as HTMLInputElement;
+            const password = document.getElementById('password') as HTMLInputElement;
+
+            try {
+                const response = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.AUTHENTICATE}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username: username.value, password: password.value }),
+                })
+
+                const data = await response.json();
+
+                if (response.status !== 401) {
+                    login(data);
+                    navigate('/dashboard');
+                } else {
+                    setPasswordError(true);
+                    setPasswordErrorMessage('Invalid username or password.');
+                }
+
+            } catch (error) {
+                console.error('Error signing in:', error);
+            }
+        }
+    }
 
     return (
         <AppTheme {...props}>
@@ -183,7 +211,6 @@ export default function SignInPage(props: { disableCustomTheme?: boolean }) {
                                     type="password"
                                     id="password"
                                     autoComplete="current-password"
-                                    autoFocus
                                     required
                                     fullWidth
                                     variant="outlined"

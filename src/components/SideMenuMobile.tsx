@@ -19,6 +19,7 @@ export default function SideMenuMobile({ open, toggleDrawer }: SideMenuMobilePro
   const navigate = useNavigate();
 
   const handleLogout = () => {
+    localStorage.removeItem('tokens');
     navigate('/auth/signin');
   };
 

@@ -29,6 +29,7 @@ export default function OptionsMenu() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
+    localStorage.removeItem('tokens');
     navigate('/auth/signin');
   };
 

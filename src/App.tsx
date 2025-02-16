@@ -1,22 +1,28 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom/client';
-import { StyledEngineProvider } from '@mui/material/styles';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { Route, Routes, Navigate, BrowserRouter } from 'react-router-dom';
 import SignInPage from './pages/SignInPage';
 import SignUpPage from './pages/SignUpPage';
 import Dashboard from './pages/Dashboard';
+import { AuthProvider } from './context/AuthContext';
+import { ProtectedRoute } from './routes/ProtectedRoute';
 
 ReactDOM.createRoot(document.querySelector("#root")!).render(
   <React.StrictMode>
-    <StyledEngineProvider injectFirst>
-      <Router basename="/">
+    <AuthProvider>
+      <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Navigate to="/auth/signin" />} />
           <Route path="/auth/signin" element={<SignInPage />} />
           <Route path="/auth/signup" element={<SignUpPage />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            } />
+          <Route path="/" element={<Navigate to="/dashboard" />} />
         </Routes>
-      </Router>
-    </StyledEngineProvider>
+      </BrowserRouter>
+    </AuthProvider>
   </React.StrictMode>
 );
