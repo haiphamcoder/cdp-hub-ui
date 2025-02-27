@@ -12,6 +12,76 @@ This is the UI for the CDP Hub. It is a React application that uses the Material
 - Side navigation menu with mobile support
 - Profile and account management
 
+## Architecture
+
+```mermaid
+graph TB
+    User((User))
+
+    subgraph "CDP Hub UI System"
+        subgraph "Frontend Container (React)"
+            UI["CDP Hub UI<br>(React + TypeScript + Vite)"]
+            
+            subgraph "Core Components"
+                Router["Router<br>(React Router)"]
+                AuthProvider["Auth Provider<br>(React Context)"]
+                ProtectedRoute["Protected Route<br>(React Component)"]
+            end
+
+            subgraph "Page Components"
+                Dashboard["Dashboard<br>(React Component)"]
+                SignIn["Sign In Page<br>(React Component)"]
+                SignUp["Sign Up Page<br>(React Component)"]
+            end
+
+            subgraph "UI Components"
+                AppNavbar["App Navbar<br>(MUI Component)"]
+                Header["Header<br>(MUI Component)"]
+                MainGrid["Main Grid<br>(MUI Component)"]
+                ThemeProvider["App Theme<br>(MUI Theme)"]
+                SearchComp["Search<br>(MUI Component)"]
+                MenuComponents["Menu Components<br>(MUI Component)"]
+            end
+        end
+
+        subgraph "API Container"
+            APIConfig["API Configuration<br>(TypeScript)"]
+        end
+    end
+
+    subgraph "External Systems"
+        AuthServer["Authentication Server<br>(Port 8080)"]
+        WebServer["Web Server<br>(Nginx)"]
+    end
+
+    %% User Interactions
+    User -->|"Accesses UI<br>(Port 3000)"| WebServer
+    WebServer -->|"Serves"| UI
+
+    %% Core Component Relations
+    UI -->|"Uses"| Router
+    UI -->|"Uses"| AuthProvider
+    Router -->|"Protects Routes"| ProtectedRoute
+    ProtectedRoute -->|"Guards"| Dashboard
+
+    %% Page Component Relations
+    Router -->|"Routes to"| SignIn
+    Router -->|"Routes to"| SignUp
+    Router -->|"Routes to"| Dashboard
+
+    %% UI Component Relations
+    Dashboard -->|"Renders"| AppNavbar
+    Dashboard -->|"Renders"| Header
+    Dashboard -->|"Renders"| MainGrid
+    UI -->|"Applies"| ThemeProvider
+    AppNavbar -->|"Contains"| SearchComp
+    AppNavbar -->|"Contains"| MenuComponents
+
+    %% API Relations
+    AuthProvider -->|"Authenticates via"| APIConfig
+    APIConfig -->|"Communicates with<br>/api/v1/auth"| AuthServer
+```
+
 ## Getting Started
 
 ### Prerequisites
@@ -45,9 +115,3 @@ npm run dev
 ## Changelog
 
 See [CHANGELOG.md](CHANGELOG.md) for the latest changes.
-
-
-
-
-
-
