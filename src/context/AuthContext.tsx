@@ -1,65 +1,61 @@
-import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
+import { API_CONFIG } from '../config/api';
 
 interface AuthContextType {
+    userId: string | null;
     isAuthenticated: boolean;
-    tokens: {
-        accessToken: string;
-        refreshToken: string;
-    } | null;
-    login: (tokens: { access_token: string; refresh_token: string }) => void;
+    isLoading: boolean;
+    checkAuth: () => void;
     logout: () => void;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+// Create the context object with a default value
+const AuthContext = createContext<AuthContextType>({
+    userId: null,
+    isAuthenticated: false,
+    isLoading: true,
+    checkAuth: () => { },
+    logout: () => { },
+});
 
-export function AuthProvider({ children }: { children: ReactNode }) {
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [tokens, setTokens] = useState<AuthContextType['tokens']>(null);
-    const [isLoading, setIsLoading] = useState(true);  // Add loading state
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    const [userId, setUserId] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
 
-    useEffect(() => {
-        const storedTokens = localStorage.getItem('tokens');
-        if (storedTokens) {
-            const parsedTokens = JSON.parse(storedTokens);
-            setTokens({
-                accessToken: parsedTokens.access_token,
-                refreshToken: parsedTokens.refresh_token,
-            });
-            setIsAuthenticated(true);
+    const checkAuth = async () => {
+        try {
+            const response = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.AUTH_INFO}`, { method: "GET", credentials: "include" });
+            if (response.ok) {
+                const data = await response.json();
+                setUserId(data.user_id);
+            } else {
+                setUserId(null);
+            }
+        } catch (error) {
+            console.error("Error checking authentication status", error);
+            setUserId(null);
         }
         setIsLoading(false);
-    }, []);
-
-    const login = (tokens: { access_token: string; refresh_token: string }) => {
-        setIsAuthenticated(true);
-        setTokens({
-            accessToken: tokens.access_token,
-            refreshToken: tokens.refresh_token,
-        });
-        localStorage.setItem('tokens', JSON.stringify(tokens));
-    };
-
-    const logout = () => {
-        setIsAuthenticated(false);
-        setTokens(null);
-        localStorage.removeItem('tokens');
-    };
-
-    if (isLoading) {
-        return null; // or a loading spinner
     }
 
+    useEffect(() => {
+        checkAuth();
+    }, []);
+
+    const logout = async () => {
+        try {
+            await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.LOGOUT}`, { method: "POST", credentials: "include" });
+        } catch (error) {
+            console.error("Error logging out", error);
+        }
+        setUserId(null);
+    };
+
     return (
-        <AuthContext.Provider value={{ isAuthenticated, tokens, login, logout }}>
+        <AuthContext.Provider value={{ userId, isAuthenticated: !!userId, isLoading, checkAuth, logout }}>
             {children}
         </AuthContext.Provider>
     );
-}
-
-export const useAuth = () => {
-    const context = useContext(AuthContext);
-    if (context === undefined) {
-        throw new Error('useAuth must be used within an AuthProvider');
-    }
-    return context;
 };
+
+export const useAuth = () => useContext(AuthContext);

@@ -75,7 +75,7 @@ export default function SignInPage(props: { disableCustomTheme?: boolean }) {
     const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
     const [forgotPasswordDialogOpen, setForgotPasswordDialogOpen] = React.useState(false);
 
-    const { login } = useAuth();
+    const { checkAuth } = useAuth();
 
     const handleForgotPasswordDialogOpen = () => {
         setForgotPasswordDialogOpen(true);
@@ -126,30 +126,38 @@ export default function SignInPage(props: { disableCustomTheme?: boolean }) {
         return isValid;
     };
 
+    const handleSignInWithGoogle = async () => {
+        const redirectUrl = `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.REDIRECT_LOGIN_GOOGLE}`;
+        window.open(redirectUrl, '_self');
+    }
+
     const handleSignIn = async () => {
         if (validateInputs()) {
             const username = document.getElementById('username') as HTMLInputElement;
             const password = document.getElementById('password') as HTMLInputElement;
 
             try {
-                const response = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.AUTHENTICATE}`, {
+                const response = fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.AUTHENTICATE}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ username: username.value, password: password.value }),
-                })
+                    body: JSON.stringify({
+                        username: username.value,
+                        password: password.value,
+                    }),
+                    credentials: 'include',
+                });
 
-                const data = await response.json();
-
-                if (response.status !== 401) {
-                    login(data);
+                if ((await response).status === 200) {
+                    await checkAuth();
                     navigate('/dashboard');
                 } else {
+                    setUsernameError(true);
+                    setUsernameErrorMessage('Invalid username or password.');
                     setPasswordError(true);
                     setPasswordErrorMessage('Invalid username or password.');
                 }
-
             } catch (error) {
                 console.error('Error signing in:', error);
             }
@@ -249,7 +257,7 @@ export default function SignInPage(props: { disableCustomTheme?: boolean }) {
                     <Button
                         fullWidth
                         variant="outlined"
-                        onClick={() => alert('Sign in with Google')}
+                        onClick={() => handleSignInWithGoogle()}
                         startIcon={<GoogleIcon />}
                     >
                         Sign in with Google

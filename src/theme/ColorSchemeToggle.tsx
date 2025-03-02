@@ -7,7 +7,11 @@ export default function ColorSchemeToggle(props: IconButtonProps) {
     const { mode, setMode } = useColorScheme();
     const [mounted, setMounted] = React.useState(false);
 
-    React.useEffect(() => setMounted(true), []);
+    React.useEffect(() => {
+        setMounted(true);
+        // setMode(localStorage.getItem('color-scheme') as 'light' | 'dark' || 'light');
+    }, []);
+
     return (
         <IconButton
             aria-label="toggle light/dark mode"
