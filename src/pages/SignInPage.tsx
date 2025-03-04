@@ -21,6 +21,7 @@ import { useNavigate } from 'react-router-dom';
 import { GoogleIcon } from '../components/CustomIcons';
 import { API_CONFIG } from '../config/api';
 import { useAuth } from '../context/AuthContext';
+import { Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
 
 const Card = styled(MuiCard)(({ theme }) => ({
     display: 'flex',
@@ -74,6 +75,7 @@ export default function SignInPage(props: { disableCustomTheme?: boolean }) {
     const [passwordError, setPasswordError] = React.useState(false);
     const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
     const [forgotPasswordDialogOpen, setForgotPasswordDialogOpen] = React.useState(false);
+    const [errorDialogOpen, setErrorDialogOpen] = React.useState(false);
 
     const { checkAuth } = useAuth();
 
@@ -85,16 +87,40 @@ export default function SignInPage(props: { disableCustomTheme?: boolean }) {
         setForgotPasswordDialogOpen(false);
     };
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+
         if (usernameError || passwordError) {
-            event.preventDefault();
             return;
         }
+
         const data = new FormData(event.currentTarget);
-        console.log({
-            username: data.get('username'),
-            password: data.get('password'),
-        });
+        const username = data.get('username');
+        const password = data.get('password');
+        
+        try {
+            const response = fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.AUTHENTICATE}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    username: username,
+                    password: password,
+                }),
+                credentials: 'include',
+            });
+
+            if ((await response).status === 200) {
+                await checkAuth();
+                navigate('/dashboard');
+            } else {
+                setErrorDialogOpen(true);
+            }
+        } catch (error) {
+            console.error('Error signing in:', error);
+            setErrorDialogOpen(true);
+        }
     };
 
     const navigate = useNavigate();
@@ -129,39 +155,6 @@ export default function SignInPage(props: { disableCustomTheme?: boolean }) {
     const handleSignInWithGoogle = async () => {
         const redirectUrl = `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.REDIRECT_LOGIN_GOOGLE}`;
         window.open(redirectUrl, '_self');
-    }
-
-    const handleSignIn = async () => {
-        if (validateInputs()) {
-            const username = document.getElementById('username') as HTMLInputElement;
-            const password = document.getElementById('password') as HTMLInputElement;
-
-            try {
-                const response = fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.AUTHENTICATE}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        username: username.value,
-                        password: password.value,
-                    }),
-                    credentials: 'include',
-                });
-
-                if ((await response).status === 200) {
-                    await checkAuth();
-                    navigate('/dashboard');
-                } else {
-                    setUsernameError(true);
-                    setUsernameErrorMessage('Invalid username or password.');
-                    setPasswordError(true);
-                    setPasswordErrorMessage('Invalid username or password.');
-                }
-            } catch (error) {
-                console.error('Error signing in:', error);
-            }
-        }
     }
 
     return (
@@ -243,16 +236,16 @@ export default function SignInPage(props: { disableCustomTheme?: boolean }) {
                                 </Link>
                             </Box>
                         </Box>
+                        <ForgotPasswordDialog open={forgotPasswordDialogOpen} handleClose={handleForgotPasswordDialogClose} />
+                        <Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            onClick={validateInputs}
+                        >
+                            Sign in
+                        </Button>
                     </Box>
-                    <ForgotPasswordDialog open={forgotPasswordDialogOpen} handleClose={handleForgotPasswordDialogClose} />
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        onClick={handleSignIn}
-                    >
-                        Sign in
-                    </Button>
                     <Divider>or</Divider>
                     <Button
                         fullWidth
@@ -274,6 +267,20 @@ export default function SignInPage(props: { disableCustomTheme?: boolean }) {
                     </Typography>
                 </Card>
             </SignInContainer>
+            <Dialog
+                open={errorDialogOpen}
+                onClose={() => setErrorDialogOpen(false)}
+            >
+                <DialogTitle>Error</DialogTitle>
+                <DialogContent>
+                    <Typography id="error-dialog-description">
+                        Username or password is incorrect. Please try again.
+                    </Typography>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setErrorDialogOpen(false)}>OK</Button>
+                </DialogActions>
+            </Dialog>
         </AppTheme>
     );
 }

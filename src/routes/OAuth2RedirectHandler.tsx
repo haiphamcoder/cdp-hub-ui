@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from '../context/AuthContext';
-import LoadingScreen from "../pages/LoadingScreen";
+import LoadingPage from "../pages/LoadingPage";
 
 const OAuth2RedirectHandler = () => {
     const navigate = useNavigate();
@@ -16,7 +16,7 @@ const OAuth2RedirectHandler = () => {
         handleOAuth2Login();
     }, [navigate, checkAuth]);
 
-    return <LoadingScreen text="Logging in..." />;
+    return <LoadingPage text="Processing OAuth2 login..." />;
 };
 
 export default OAuth2RedirectHandler;

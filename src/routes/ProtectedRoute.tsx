@@ -1,14 +1,14 @@
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { JSX } from 'react';
-import LoadingScreen from '../pages/LoadingScreen';
+import LoadingPage from '../pages/LoadingPage';
 
 export const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
     const { isAuthenticated , isLoading } = useAuth();
     const location = useLocation();
 
     if (isLoading) {
-        return <LoadingScreen />;
+        return <LoadingPage />;
     }
 
     if (!isAuthenticated) {

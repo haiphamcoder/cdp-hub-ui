@@ -78,31 +78,20 @@ export default function SignUpPage(props: { disableCustomTheme?: boolean }) {
     const [passwordConfirmationError, setPasswordConfirmationError] = React.useState(false);
     const [passwordConfirmationErrorMessage, setPasswordConfirmationErrorMessage] = React.useState('');
     const [agreedToTerms, setAgreedToTerms] = React.useState(false);
-    const [agreedToTermsError, setAgreedToTermsError] = React.useState(false);
 
     const handleAgreeToTerms = (event: React.ChangeEvent<HTMLInputElement>) => {
         setAgreedToTerms(event.target.checked);
-        if (!event.target.checked) {
-            setAgreedToTermsError(true);
-        } else {
-            setAgreedToTermsError(false);
-        }
     };
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        if (emailError || usernameError || passwordError || passwordConfirmationError || agreedToTermsError || firstNameError || lastNameError) {
+
+        if (emailError || usernameError || passwordError || passwordConfirmationError || firstNameError || lastNameError) {
             event.preventDefault();
             return;
         }
+
         const data = new FormData(event.currentTarget);
-        console.log({
-            firstName: data.get('firstName'),
-            lastName: data.get('lastName'),
-            email: data.get('email'),
-            username: data.get('username'),
-            password: data.get('password'),
-            passwordConfirmation: data.get('passwordConfirmation'),
-        });
+        console.log(data);
     };
 
     const validateInputs = () => {
@@ -112,7 +101,6 @@ export default function SignUpPage(props: { disableCustomTheme?: boolean }) {
         const username = document.getElementById('username') as HTMLInputElement;
         const password = document.getElementById('password') as HTMLInputElement;
         const passwordConfirmation = document.getElementById('passwordConfirmation') as HTMLInputElement;
-        const termsAndConditions = document.getElementById('termsAndConditions') as HTMLInputElement;
 
         let isValid = true;
 
@@ -170,13 +158,6 @@ export default function SignUpPage(props: { disableCustomTheme?: boolean }) {
             setPasswordConfirmationErrorMessage('');
         }
 
-        if (!termsAndConditions.checked) {
-            setAgreedToTermsError(true);
-            isValid = false;
-        } else {
-            setAgreedToTermsError(false);
-        }
-
         return isValid;
     };
 
@@ -214,6 +195,7 @@ export default function SignUpPage(props: { disableCustomTheme?: boolean }) {
                                     id="firstName"
                                     name="firstName"
                                     autoComplete="firstName"
+                                    autoFocus
                                     required
                                     fullWidth
                                     variant="outlined"
@@ -248,7 +230,6 @@ export default function SignUpPage(props: { disableCustomTheme?: boolean }) {
                                     name="username"
                                     placeholder="admin"
                                     autoComplete="current-username"
-                                    autoFocus
                                     required
                                     fullWidth
                                     variant="outlined"
@@ -284,7 +265,6 @@ export default function SignUpPage(props: { disableCustomTheme?: boolean }) {
                                     type="password"
                                     id="password"
                                     autoComplete="current-password"
-                                    autoFocus
                                     required
                                     fullWidth
                                     variant="outlined"
@@ -303,7 +283,6 @@ export default function SignUpPage(props: { disableCustomTheme?: boolean }) {
                                     type="password"
                                     id="passwordConfirmation"
                                     autoComplete="current-password"
-                                    autoFocus
                                     required
                                     fullWidth
                                     variant="outlined"
@@ -322,15 +301,15 @@ export default function SignUpPage(props: { disableCustomTheme?: boolean }) {
                                 label="I agree to the terms and conditions."
                             />
                         </Box>
+                        <Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            onClick={validateInputs}
+                        >
+                            Sign up
+                        </Button>
                     </Box>
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        onClick={validateInputs}
-                    >
-                        Sign up
-                    </Button>
                     <Divider>or</Divider>
                     <Button
                         fullWidth

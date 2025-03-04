@@ -1,38 +1,43 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useState, useEffect, useContext } from 'react';
 import { API_CONFIG } from '../config/api';
+import { Alert, Snackbar } from '@mui/material';
 
 interface AuthContextType {
     userId: string | null;
     isAuthenticated: boolean;
     isLoading: boolean;
-    checkAuth: () => void;
-    logout: () => void;
+    checkAuth: () => Promise<void>;
+    logout: () => Promise<void>;
 }
 
 // Create the context object with a default value
-const AuthContext = createContext<AuthContextType>({
+const AuthContext = createContext<AuthContextType | null>({
     userId: null,
     isAuthenticated: false,
     isLoading: true,
-    checkAuth: () => { },
-    logout: () => { },
+    checkAuth: async () => { },
+    logout: async () => { },
 });
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [userId, setUserId] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     const checkAuth = async () => {
         try {
             const response = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.AUTH_INFO}`, { method: "GET", credentials: "include" });
             if (response.ok) {
                 const data = await response.json();
-                setUserId(data.user_id);
-            } else {
-                setUserId(null);
+                if (data.user_id) {
+                    setUserId(data.user_id);
+                } else {
+                    setUserId(null);
+                }
             }
         } catch (error) {
             console.error("Error checking authentication status", error);
+            setError("Not connected to the server! Please try again later.");
             setUserId(null);
         }
         setIsLoading(false);
@@ -54,8 +59,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return (
         <AuthContext.Provider value={{ userId, isAuthenticated: !!userId, isLoading, checkAuth, logout }}>
             {children}
+
+            {/* Display an error message if one exists */}
+            <Snackbar
+                open={!!error}
+                autoHideDuration={4000}
+                onClose={() => setError(null)}
+                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+            >
+                <Alert severity="error" sx={{ width: "100%" }} onClose={() => setError(null)}>
+                    {error}
+                </Alert>
+            </Snackbar>
         </AuthContext.Provider>
     );
 };
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+    const context = useContext(AuthContext);
+    if (!context) {
+        throw new Error("useAuth must be used within an AuthProvider");
+    }
+    return context;
+};
+
+export { AuthContext };

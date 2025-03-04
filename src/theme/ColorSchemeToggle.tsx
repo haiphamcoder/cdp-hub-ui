@@ -4,21 +4,23 @@ import React from "react";
 
 export default function ColorSchemeToggle(props: IconButtonProps) {
     const { onClick, ...other } = props;
-    const { mode, setMode } = useColorScheme();
-    const [mounted, setMounted] = React.useState(false);
+    const {mode, setMode } = useColorScheme();
 
     React.useEffect(() => {
-        setMounted(true);
-        // setMode(localStorage.getItem('color-scheme') as 'light' | 'dark' || 'light');
-    }, []);
+        if (mode === 'system') {
+            setMode('light');
+        }
+    }, [mode, setMode]);
 
     return (
         <IconButton
             aria-label="toggle light/dark mode"
-            disabled={!mounted}
             size="small"
             disableRipple
-            onClick={() => setMode(mode === 'light' ? 'dark' : 'light')}
+            onClick={() => {
+                console.log('mode', mode);
+                setMode(mode === 'light' ? 'dark' : 'light');
+            }}
             {...other}
         >
             {mode === 'light' ? <DarkModeRounded /> : <LightModeRounded />}
