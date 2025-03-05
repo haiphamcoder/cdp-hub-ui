@@ -9,6 +9,16 @@ import NotificationsRoundedIcon from '@mui/icons-material/NotificationsRounded';
 import MenuButton from './MenuButton';
 import MenuContent from './MenuContent';
 import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { API_CONFIG } from '../config/api';
+import { useAuth } from '../context/AuthContext';
+
+interface UserData {
+  first_name: string;
+  last_name: string;
+  email: string;
+  avatar_url: string;
+};
 
 interface SideMenuMobileProps {
   open: boolean | undefined;
@@ -18,8 +28,32 @@ interface SideMenuMobileProps {
 export default function SideMenuMobile({ open, toggleDrawer }: SideMenuMobileProps) {
   const navigate = useNavigate();
 
+  const [userData, setUserData] = useState<UserData | null>(null);
+
+  const { logout } = useAuth();
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.USER}`, {
+          method: 'GET', credentials: 'include'
+        });
+        if (response.ok) {
+          const data = await response.json();
+          if (data.data) {
+            setUserData(data.data);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching user data', error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
   const handleLogout = () => {
-    localStorage.removeItem('tokens');
+    logout();
     navigate('/auth/signin');
   };
 
@@ -50,11 +84,11 @@ export default function SideMenuMobile({ open, toggleDrawer }: SideMenuMobilePro
             <Avatar
               sizes="small"
               alt="Riley Carter"
-              src="/static/images/avatar/7.jpg"
+              src={userData ? userData.avatar_url : ''}
               sx={{ width: 24, height: 24 }}
             />
             <Typography component="p" variant="h6">
-              Riley Carter
+              {userData ? `${userData.first_name} ${userData.last_name}` : 'User'}
             </Typography>
           </Stack>
           <MenuButton showBadge>

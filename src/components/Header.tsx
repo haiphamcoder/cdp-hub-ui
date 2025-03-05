@@ -7,8 +7,39 @@ import ColorSchemeToggle from '../theme/ColorSchemeToggle';
 import Search from './Search';
 import { Avatar, Box, Typography } from '@mui/material';
 import OptionsMenu from './OptionsMenu';
+import { useState, useEffect } from 'react';
+import { API_CONFIG } from '../config/api';
+
+interface UserData {
+  first_name: string;
+  last_name: string;
+  email: string;
+  avatar_url: string;
+};
 
 export default function Header() {
+  const [userData, setUserData] = useState<UserData | null>(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.USER}`, {
+          method: 'GET', credentials: 'include'
+        });
+        if (response.ok) {
+          const data = await response.json();
+          if (data.data) {
+            setUserData(data.data);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching user data', error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
   return (
     <Stack
       direction="row"
@@ -40,15 +71,15 @@ export default function Header() {
           <Avatar
             sizes="small"
             alt="Riley Carter"
-            src="/static/images/avatar/7.jpg"
+            src={userData? userData.avatar_url : ''}
             sx={{ width: 36, height: 36 }}
           />
           <Box sx={{ mr: 'auto' }}>
             <Typography variant="body2" sx={{ fontWeight: 500, lineHeight: '16px' }}>
-              Riley Carter
+              {userData? `${userData.first_name} ${userData.last_name}` : 'User'}
             </Typography>
             <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-              riley@email.com
+              {userData? userData.email : 'user@example.com'}
             </Typography>
           </Box>
           <OptionsMenu />
