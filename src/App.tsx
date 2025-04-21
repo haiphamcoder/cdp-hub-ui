@@ -7,6 +7,7 @@ import Dashboard from './pages/Dashboard';
 import { AuthProvider } from './context/AuthContext';
 import { ProtectedRoute } from './routes/ProtectedRoute';
 import OAuth2RedirectHandler from './routes/OAuth2RedirectHandler';
+import { ContentProvider } from './context/ContentContext';
 
 ReactDOM.createRoot(document.querySelector("#root")!).render(
   <React.StrictMode>
@@ -18,7 +19,9 @@ ReactDOM.createRoot(document.querySelector("#root")!).render(
           <Route path="/dashboard"
             element={
               <ProtectedRoute>
-                <Dashboard />
+                <ContentProvider>
+                  <Dashboard />
+                </ContentProvider>
               </ProtectedRoute>
             } />
           <Route path="/" element={<Navigate to="/dashboard" />} />
