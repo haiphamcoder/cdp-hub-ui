@@ -4,7 +4,7 @@ export const API_CONFIG = {
     OAUTH2_REDIRECT_URI: 'http://localhost:5173/oauth2/redirect',
     ENDPOINTS: {
         AUTHENTICATE: '/api/v1/auth/authenticate',
-        REDIRECT_LOGIN_GOOGLE: '/oauth2/authorization/google?redirect-uri=http://localhost:5173/oauth2/redirect',
+        REDIRECT_LOGIN_GOOGLE: '/oauth2/authorization/google',
         AUTH_INFO: '/api/v1/auth/me',
         LOGOUT: '/api/v1/auth/logout',
         USER: '/api/v1/user',
